@@ -50,3 +50,12 @@
                     :updater (lambda () ,@body))))
        (update-cell ,res)
        ,res)))
+
+(defmacro defcell (name value &option doc)
+  "Sugar to define/redefine a cell"
+  (handler-case (symbol-value 'name)
+    (unbound-variable ()
+      `(defvar ,name (cell ,value) ,doc))
+    (:no-error (value)
+      (declare (ignore value))
+      `(cell-set ,name ,value))))
