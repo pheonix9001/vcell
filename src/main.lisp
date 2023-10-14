@@ -16,6 +16,10 @@
      :initarg :updater))
   (:documentation "A reactive cell"))
 
+(defmethod print-object ((cell cell) stream)
+  (print-unreadable-object (cell stream :type t)
+    (print-object (cell-ref-noop cell) stream)))
+
 ;; This is the magic
 (defparameter *cell-self* '()
   "The current cell")
@@ -51,11 +55,8 @@
        (update-cell ,res)
        ,res)))
 
-(defmacro defcell (name value &option doc)
+(defmacro defcell (name value &optional doc)
   "Sugar to define/redefine a cell"
-  (handler-case (symbol-value 'name)
-    (unbound-variable ()
-      `(defvar ,name (cell ,value) ,doc))
-    (:no-error (value)
-      (declare (ignore value))
-      `(cell-set ,name ,value))))
+  (if (boundp name)
+    `(cell-set ,name ,value)
+    `(defvar ,name (cell ,value) ,doc)))
