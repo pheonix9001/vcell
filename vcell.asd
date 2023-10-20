@@ -1,8 +1,8 @@
 (in-package :asdf-user)
 
-(defsystem wcells
+(defsystem vcell
   :author "pheonix9001"
-  :description "Superior concurrency with dataflow"
+  :description "Powerful dataflow in Lisp"
   :depends-on (trivial-types)
   :components
   ((:module "src"

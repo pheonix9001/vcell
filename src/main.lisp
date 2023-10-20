@@ -1,6 +1,12 @@
-(defpackage wcells
-  (:use :cl :trivial-types))
-(in-package wcells)
+(defpackage vcell
+  (:use :cl :trivial-types)
+  (:export
+    cell
+    cell-ref
+    cell-ref-noop
+    cell-set
+    defcell))
+(in-package vcell)
 
 (defclass cell ()
   ((val
