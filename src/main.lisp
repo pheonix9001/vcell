@@ -34,16 +34,20 @@
 (defmethod cell-ref ((cell cell))
   (when *cell-self*
     (setf (cell-subs cell)
-          (remove-duplicates
-                 (cons *cell-self* (cell-subs cell))
-                 :test #'eql)))
+          (adjoin *cell-self* (cell-subs cell))))
   (cell-ref-noop cell))
 
 (defun update-cell (cell)
   "Update a cell to match its `updater`"
-  (let ((*cell-self* cell))
+
+  (let ((oldsubs (cell-subs cell))
+        (*cell-self* cell))
     (setf (cell-ref-noop cell) (funcall (cell-updater cell)))
-    (dolist (sub (cell-subs cell))
+
+    ;; Remove all subscribers
+    (setf (cell-subs cell) '())
+    (dolist (sub oldsubs)
+       ;; This will add it back in
        (update-cell sub))))
 
 (defmacro cell-set (cell-code &body body)
@@ -56,7 +60,7 @@
 (defmacro cell (&body body)
   "Defines a cell"
   (let ((res (gensym "res-cell")))
-    `(let* ((,res (make-instance 'cell
+    `(let ((,res (make-instance 'cell
                     :val '()
                     :updater (lambda () ,@body))))
        (update-cell ,res)
