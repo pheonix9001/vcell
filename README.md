@@ -1,40 +1,40 @@
-# Vcell
+# `v:cell`
 Powerful dataflow in Lisp
 
 ## Demonstration
 Let us begin with a simple example
 ```lisp
-(defcell *age* 10)
+(v:defcell *age* 10)
 
-*age* ; => #<VCELL:CELL 10>
-(cell-ref *age*) ; => 10
+*age* ; => #<V:CELL 10>
+(v:cell-ref *age*) ; => 10
 ```
 
 Now let's get fancy
 ```lisp
-(defcell *can-drive-p* (< 18 (cell-ref *age*)))
-(defcell *message* (if (cell-ref *can-drive-p*) "Ok" "Wait that's illegal!"))
+(v:defcell *can-drive-p* (< 18 (v:cell-ref *age*)))
+(v:defcell *message* (if (v:cell-ref *can-drive-p*) "Ok" "Wait that's illegal!"))
 
-(cell-ref *message*) ; => "Wait that's illegal!"
-(cell-ref *can-drive-p*) ; => NIL
+(v:cell-ref *message*) ; => "Wait that's illegal!"
+(v:cell-ref *can-drive-p*) ; => NIL
 ```
 
 Now this is where the magic comes in
 ```lisp
-(cell-set *age* 20) ; Set the value of a cell dynamically
-(cell-ref *message*) ; => "Ok"
+(v:cell-set *age* 20) ; Set the value of a cell dynamically
+(v:cell-ref *message*) ; => "Ok"
 
 ;; Do it again
-(cell-set *age* 11)
-(cell-ref *message*) ; => "Wait that's illegal!"
+(v:cell-set *age* 11)
+(v:cell-ref *message*) ; => "Wait that's illegal!"
 ```
 
 And we can create an observer
 ```lisp
-(defcell *give-warning* (format t "If you are trying to drive: ~a" (cell-ref *message*)))
+(v:defcell *give-warning* (format t "If you are trying to drive: ~a" (v:cell-ref *message*)))
 
-(cell-set *age* 20) ; => If you are trying to drive: Ok
-(cell-set *age* 10) ; => If you are trying to drive: Wait that's illegal!
+(v:cell-set *age* 20) ; => If you are trying to drive: Ok
+(v:cell-set *age* 10) ; => If you are trying to drive: Wait that's illegal!
 ```
 
 And `defcell` supports redefinition!
@@ -44,12 +44,13 @@ And `defcell` supports redefinition!
 
 (defcell *give-warning*
   (when *trying-to-drive-p*
-    (princ (cell-ref *message*))))
+    (princ (v:cell-ref *message*))))
 
-(cell-set *age* 20) ; No output
-(cell-set *age* 10) ; No output
+(v:cell-set *age* 20) ; No output
+(v:cell-set *age* 10) ; No output
 (setf *trying-to-drive-p* t)
-(cell-set *age* 20) ; => Ok
-(cell-set *age* 10) ; => Wait that's illegal!
+(v:cell-set *age* 20) ; => Ok
+(v:cell-set *age* 10) ; => Wait that's illegal!
 ```
+
 ## License

@@ -1,5 +1,6 @@
 (defpackage vcell
   (:use :cl :trivial-types)
+  (:nicknames :v)
   (:export
     cell
     cell-ref
